@@ -1,0 +1,84 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.start {
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.startBtn {
+  border: 0px;
+  border-radius: 5px;
+  padding: 15px 35px 15px 35px;
+  font-size: x-large;
+  background-color: blueviolet;
+  color: white;
+  /* -webkit-animation-name: example;
+  -webkit-animation-duration: 4s; 
+  animation-name: startBtn;
+  animation-duration: 4s;  */
+}
+
+.startBtn:hover {
+  cursor: pointer;
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
+  -webkit-animation-name: startBtn;
+  /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 0.6s;
+  /* Safari 4.0 - 8.0 */
+  animation-name: startBtn;
+  animation-duration: 0.6s;
+  animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes startBtn {
+  from {
+    box-shadow: 0;
+  }
+
+  to {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+}
+
+.startBtn:active {
+  border: 0px;
+}
+
+.startBtn a {
+  text-decoration: none;
+  color: white;
+}
+
+.startBtn a:hover {
+  color: white;
+}
+
+.quiz-box {
+  padding: 40px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.quiz-a{
+  padding-top: 15x;
+}
+.quiz-submit-btn{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+.quiz-btn{
+  border: 0px;
+  padding: 10px 15px;
+  background-color: blueviolet;
+  color: white;
+  border-radius: 5px;
+}

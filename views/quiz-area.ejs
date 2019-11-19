@@ -1,0 +1,18 @@
+<div class="quiz-box">
+    <div class="quiz-q">
+        <p><b><%=items[0].q%></b></p>
+    </div>
+    <div class="quiz-a">
+        <% for(i=0; i < items[0].a.length; i++ ) { %>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="radio" class="form-check-input" name="optradio"
+                    value="<%=items[0].a[i]%>"><%=items[0].a[i]%>
+            </label>
+        </div>
+        <% } %>
+    </div>
+    <div class="quiz-submit-btn">
+        <button class="quiz-btn" onclick="nextQ(<%=items.nextQ%>)">Submit</button>
+    </div>
+</div>
