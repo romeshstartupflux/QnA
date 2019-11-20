@@ -2,11 +2,31 @@ var express = require('express');
 var router = express.Router();
 
 const Quiz = require('../models/quiz')
+const Examinee = require('../models/examinee')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'QnA' });
 });
+
+
+router.post('/register', async function(req, res, next){
+  const examinee = new Examinee();
+  var insertdata = await examinee.collection.insertOne({
+
+    examineeName: req.body.examineeName,
+    examineeAnser :[],
+    score : 0
+
+  });
+  const firstQ = 1;
+  console.log("FIRSTQ : ",firstQ)
+  // res.send("ok")
+  // alert("lkddhjskjsfdhjfh .........")
+  res.redirect('quiz/1')
+  // res.render("/quiz")
+});
+
 
 router.get('/quiz/:pageNumber', async function(req, res, next){
   const quiz = new Quiz();
@@ -32,10 +52,7 @@ router.get('/quiz/:pageNumber', async function(req, res, next){
 
 })
 
-function score(){
-  let score = 0;
-  let answer = [];
-}
+
 
 router.get("/alldata", async function(req,res, next){
   const quiz = new Quiz();

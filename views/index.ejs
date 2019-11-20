@@ -33,9 +33,15 @@
 </head>
 
 <body id="body">
-  <div class="start">
-    <button class="startBtn" onclick="startQ()">Start</button>
-  </div>
-</body>
 
+  <div class="quiz-home">
+    <form onsubmit="startQ(); event.preventDefault();">
+      <div class="start">
+        <input type="text" name="examineeName" class="form-control" id="examineeName" placeholder="Name">
+        <button type="submit" class="form-control startBtn" id="startBtn" >Start</button>
+      </div>
+    </form>
+  </div>
+
+</body>
 </html>

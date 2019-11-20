@@ -13,6 +13,7 @@ function nextQ(nextQ) {
     // };
     // xhttp.open("GET", "/quiz/" + nextQ, true);
     // xhttp.send();
+    console.log("NEXTQ CALLED ().")
     $.ajax({
         type: "GET",
         url: "/quiz/"+nextQ,
@@ -23,12 +24,28 @@ function nextQ(nextQ) {
     })
 }
 
-function calculateScore(){
-    let answer = 0;
-    nextQ(nextQ);
+function calculateScore(nextQ){
+    let answer = $("answer").val();
+    console.log(" A N S W E R  :" , answer)
+    //nextQ(nextQ);
 }
 
 function startQ() {
     const qNumber = 1;
-    nextQ(qNumber);
+
+    let examineeName = $("#examineeName").val();
+    console.log("Examinee Name : ",examineeName);
+    $.ajax({
+        method: "POST",
+        url: "/register",
+        data: ({"examineeName" : examineeName}),
+        success : function(result){
+            // console.log("Result yaha pe hai")
+            // alert("hogya.............!")
+            $("body").html(result)
+            // return nextQ(qNumber);
+        }
+    });
+
+    // nextQ(qNumber);
 }
