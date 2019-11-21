@@ -1,14 +1,8 @@
 function nextQ(nextQ) {
     console.log("NEXTQ CALLED ().")
-    // let answerArray = [];
-    // let score = 0;
 
-    let answer = $("#answer:checked").val();
+    let answer = $("input:radio[name=answer]:checked").val();
     console.log("ANSWER : ", answer)
-    // console.log("VALUE : ", value)
-    // answerArray.push(answer);
-
-    // localStorage.setItem("answerArray", JSON.stringify(answerArray))
 
     $.ajax({
         type: "GET",
@@ -18,7 +12,6 @@ function nextQ(nextQ) {
         }
     })
 }
-
 
 function startQ() {
     const qNumber = 1;
@@ -36,6 +29,5 @@ function startQ() {
             // return nextQ(qNumber);
         }
     });
-
     // nextQ(qNumber);
 }
