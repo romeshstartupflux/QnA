@@ -95,3 +95,9 @@ a {
   color: white;
   border-radius: 5px;
 }
+
+nav{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

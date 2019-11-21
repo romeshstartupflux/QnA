@@ -1,23 +1,18 @@
 function nextQ(nextQ) {
-
-    // let xhttp = new XMLHttpRequest();
-    // if (nextQ == "") {
-    //     document.getElementById("quiz").innerHTML = "";
-    //     return;
-    // }
-    // xhttp.onreadystatechange = function () {
-    //     if (this.readyState == 4 && this.status == 200) {
-
-    //         document.getElementById("body").innerHTML = this.responseText;
-    //     }
-    // };
-    // xhttp.open("GET", "/quiz/" + nextQ, true);
-    // xhttp.send();
     console.log("NEXTQ CALLED ().")
+    // let answerArray = [];
+    // let score = 0;
+
+    let answer = $("#answer").val();
+    console.log("ANSWER : ", answer)
+    console.log("VALUE : ", value)
+    // answerArray.push(answer);
+
+    // localStorage.setItem("answerArray", JSON.stringify(answerArray))
+
     $.ajax({
         type: "GET",
         url: "/quiz/"+nextQ,
-
         success: function(result){
             $("body").html(result)
         }

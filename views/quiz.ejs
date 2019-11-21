@@ -1,4 +1,10 @@
-<h1>Quiz</h1>
+<header>
+    <nav>
+        <h1>Quiz</h1>
+        <h5 class="ml-auto"> Guest</h5>
+    </nav>
+</header>
+
 
 <div id="quiz">
     <div class="quiz-box">
@@ -6,19 +12,20 @@
             <p><b><%=items[0].q%></b></p>
         </div>
         <div class="quiz-a">
-            <form>
+            <form onsubmit="event.preventDefault(); nextQ(<%=nextQ%>)">
                 <% for(i=0; i < items[0].a.length; i++ ) { %>
                 <div class="form-check">
                     <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="answer"
-                            value="<%=items[0].a[i]%>"><%=items[0].a[i]%>
+                            id="<%=items[0].a[i]%>" value="<%=items[0].a[i]%>"><%=items[0].a[i]%>
                     </label>
                 </div>
                 <% } %>
+                <div class="quiz-submit-btn">
+                    <button class="quiz-btn" type="submit">Submit</button>
+                </div>
             </form>
         </div>
-        <div class="quiz-submit-btn">
-            <button class="quiz-btn">Submit</button>
-        </div>
+        
     </div>
 </div>

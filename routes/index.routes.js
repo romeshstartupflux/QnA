@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const querystring = require('querystring'); 
 
 const Quiz = require('../models/quiz')
 const Examinee = require('../models/examinee')
@@ -15,24 +16,38 @@ router.post('/register', async function(req, res, next){
   var insertdata = await examinee.collection.insertOne({
 
     examineeName: req.body.examineeName,
-    examineeAnser :[],
+    examineeAnswer :[],
     score : 0
 
   });
   const firstQ = 1;
   console.log("FIRSTQ : ",firstQ)
+  console.log("examineeName", insertdata.ops[0]._id)
   // res.send("ok")
   // alert("lkddhjskjsfdhjfh .........")
-  res.redirect('quiz/1')
-  // res.render("/quiz")
+  // res.send({})
+  // res.redirect('quiz/'+firstQ)
+  // const query = querystring.stringify({
+  //   "firstQ":firstQ,
+  //   "examineeName":insertdata.ops[0].examineeName,
+  //   "examineeID": insertdata.ops[0]._id,
+  // })
+  res.redirect('quiz/'+firstQ)
 });
 
 
 router.get('/quiz/:pageNumber', async function(req, res, next){
+  console.log("QUIZ PAGE CALLED.");
   const quiz = new Quiz();
   const nPerPage = 1;
+  // let newReq = querystring.parse(req.params.query)
   let pageNumber = req.params.pageNumber;
-  console.log("Print STR", pageNumber)
+  // const examineeName = newReq.examineeName;
+
+  console.log("PageNumber : ", pageNumber)
+  // console.log("FirstQ : ", newReq.firstQ)
+  // console.log("Examinee Name", newReq.examineeName)
+  // console.log("Examinee ID : ", newReq.examineeID)
 
   async function quizPage(pageNumber, nPerPage) {
 
@@ -46,6 +61,7 @@ router.get('/quiz/:pageNumber', async function(req, res, next){
   }
   let countTill = await quiz.collection.find().count();
   let nextQ = parseInt(pageNumber)+1;
+  console.log("NextQ : ", nextQ)
   let sendData = {title : 'Quiz', items: await quizPage(pageNumber, nPerPage), nextQ: nextQ};
   console.log("Send Data : ", sendData)
   res.render('quiz', sendData)
@@ -61,13 +77,31 @@ router.get("/alldata", async function(req,res, next){
   res.send("OK")
 })
 
-router.get("/insertdata", function(req,res, next){
+router.get("/insertdata", async function(req,res, next){
   const quiz = new Quiz();
-  var insertdata = quiz.collection.insertOne({
-    q: "Marvel's First Movie?",
-    a: ["Thor", "Iron Man", "Captain America"],
-    ca: "Captain Marvel"
-  });
+  // var insertdata = await quiz.collection.insertMany([
+  //   {
+  //   q: "Marvel's First Movie?",
+  //   a: ["Thor", "Iron Man", "Captain America"],
+  //   ca: "Iron Man"
+  // },
+  // {
+  //   q: "Planet of Soul Stone",
+  //   a: ["Earth", "Vormir", "Nowhere"],
+  //   ca: "Vormir"
+  // },
+  // {
+  //   q: "God of Thunder",
+  //   a: ["Thor", "Iron Man", "Captain America"],
+  //   ca: "Thor"
+  // },
+  // {
+  //   q: "Thor's new weapon",
+  //   a: ["Mjolnir", "Stormbreaker", "Hammer"],
+  //   ca: "Stormbreaker"
+  // }
+
+  // ]);
   console.log("All Data : ", insertdata)
   res.send("OK")
 })
