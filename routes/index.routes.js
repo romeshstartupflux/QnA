@@ -27,14 +27,28 @@ router.post('/register', async function(req, res, next){
   // alert("lkddhjskjsfdhjfh .........")
   // res.send({})
   // res.redirect('quiz/'+firstQ)
-  // const query = querystring.stringify({
-  //   "firstQ":firstQ,
-  //   "examineeName":insertdata.ops[0].examineeName,
-  //   "examineeID": insertdata.ops[0]._id,
-  // })
+  const query = querystring.stringify({
+    "firstQ":firstQ,
+    "examineeName":insertdata.ops[0].examineeName,
+    "examineeID": insertdata.ops[0]._id,
+  })
+  req.session.user = insertdata.ops[0].examineeName
+  req.session.id = insertdata.ops[0]._id
   res.redirect('quiz/'+firstQ)
 });
 
+// router.get('/start/:query',async function(req, res, next){
+//   console.log("Start Link Called. . . . . . .")
+//   const quiz = new Quiz();
+//   const firstQ = 1;
+//   let newReq = querystring.parse(req.params.query);
+//   req.session.user = newReq.examineeName;
+//   console.log("Session : ",req.session.user )
+//   // console.log("PageNumber : ", pageNumber)
+//   console.log("FirstQ : ", newReq.firstQ)
+//   console.log("Examinee Name", newReq.examineeName)
+//   res.redirect('quiz/'+firstQ)
+// });
 
 router.get('/quiz/:pageNumber', async function(req, res, next){
   console.log("QUIZ PAGE CALLED.");
@@ -42,8 +56,10 @@ router.get('/quiz/:pageNumber', async function(req, res, next){
   const nPerPage = 1;
   // let newReq = querystring.parse(req.params.query)
   let pageNumber = req.params.pageNumber;
+  // let pageNumber = newReq.firstQ;
   // const examineeName = newReq.examineeName;
-
+  // req.session.user = newReq.examineeName;
+  // console.log("Session : ",req.session.user )
   console.log("PageNumber : ", pageNumber)
   // console.log("FirstQ : ", newReq.firstQ)
   // console.log("Examinee Name", newReq.examineeName)
@@ -62,7 +78,7 @@ router.get('/quiz/:pageNumber', async function(req, res, next){
   let countTill = await quiz.collection.find().count();
   let nextQ = parseInt(pageNumber)+1;
   console.log("NextQ : ", nextQ)
-  let sendData = {title : 'Quiz', items: await quizPage(pageNumber, nPerPage), nextQ: nextQ};
+  let sendData = {title : 'Quiz', items: await quizPage(pageNumber, nPerPage), nextQ: nextQ, examineeName: req.session.user};
   console.log("Send Data : ", sendData)
   res.render('quiz', sendData)
 

@@ -3,9 +3,9 @@ function nextQ(nextQ) {
     // let answerArray = [];
     // let score = 0;
 
-    let answer = $("#answer").val();
+    let answer = $("#answer:checked").val();
     console.log("ANSWER : ", answer)
-    console.log("VALUE : ", value)
+    // console.log("VALUE : ", value)
     // answerArray.push(answer);
 
     // localStorage.setItem("answerArray", JSON.stringify(answerArray))
@@ -19,11 +19,6 @@ function nextQ(nextQ) {
     })
 }
 
-function calculateScore(nextQ){
-    let answer = $("answer").val();
-    console.log(" A N S W E R  :" , answer)
-    //nextQ(nextQ);
-}
 
 function startQ() {
     const qNumber = 1;
