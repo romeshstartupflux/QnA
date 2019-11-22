@@ -5,12 +5,10 @@
     </nav>
 </header>
 
-
 <div id="quiz">
     <div class="quiz-box">
         <div class="quiz-q">
             <p><b><%=items[0].q%></b></p>
-            <p><b><%=items[0]._id%></b></p>
         </div>
         <div class="quiz-a">
             <form onsubmit="event.preventDefault(); nextQ(<%=nextQ%>)">
@@ -28,6 +26,5 @@
                 </div>
             </form>
         </div>
-        
     </div>
 </div>
