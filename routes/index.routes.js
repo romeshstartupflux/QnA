@@ -64,8 +64,12 @@ router.get('/quiz/:pageNumber', async function (req, res, next) {
   console.log("QUIZ PAGE CALLED.");
   const quiz = new Quiz();
   const nPerPage = 1;
-  // let newReq = querystring.parse(req.params.query)
   let pageNumber = req.params.pageNumber;
+  let countTill = await quiz.collection.find().count();
+  
+  
+  // let newReq = querystring.parse(req.params.query)
+  
   // let pageNumber = newReq.firstQ;
   // const examineeName = newReq.examineeName;
   // req.session.user = newReq.examineeName;
@@ -85,7 +89,8 @@ router.get('/quiz/:pageNumber', async function (req, res, next) {
     console.log("QuizDetails : ", quizDetails)
     return quizDetails;
   }
-  let countTill = await quiz.collection.find().count();
+  
+  console.log("Count : ", countTill)
   let nextQ = parseInt(pageNumber) + 1;
   console.log("NextQ : ", nextQ)
   let sendData = {
@@ -95,8 +100,17 @@ router.get('/quiz/:pageNumber', async function (req, res, next) {
     examineeName: req.session.user
   };
   console.log("Send Data : ", sendData)
-  res.render('quiz', sendData)
+ 
   console.log("session user id : ", req.session.userid)
+  if(nextQ > countTill){
+    res.send("Quiz Completed.")
+  }
+  else{
+    res.render('quiz', sendData)
+  }
+
+
+  
 
 })
 
