@@ -62,7 +62,9 @@ router.post('/register', async function (req, res, next) {
 
 router.get('/quiz/:pageNumber', async function (req, res, next) {
   console.log("QUIZ PAGE CALLED.");
-  const quiz = new Quiz();
+
+  if(req.session.user){
+    const quiz = new Quiz();
   const nPerPage = 1;
   let pageNumber = req.params.pageNumber;
   let countTill = await quiz.collection.find().count();
@@ -103,11 +105,18 @@ router.get('/quiz/:pageNumber', async function (req, res, next) {
  
   console.log("session user id : ", req.session.userid)
   if(nextQ > countTill){
-    res.send("Quiz Completed.")
+    // res.send("Quiz Completed.")
+    req.session.destroy()
+    res.end("End")
   }
   else{
     res.render('quiz', sendData)
   }
+  }else{
+    res.send("********************")
+  }
+
+  
 
 
   
