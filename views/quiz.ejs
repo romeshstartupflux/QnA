@@ -1,7 +1,7 @@
 <header>
     <nav>
         <h1>Quiz</h1>
-        <h5 class="ml-auto"><%=examineeName%> Guest</h5>
+        <h5 class="ml-auto"><%=examineeName%></h5>
     </nav>
 </header>
 
@@ -10,9 +10,11 @@
     <div class="quiz-box">
         <div class="quiz-q">
             <p><b><%=items[0].q%></b></p>
+            <p><b><%=items[0]._id%></b></p>
         </div>
         <div class="quiz-a">
             <form onsubmit="event.preventDefault(); nextQ(<%=nextQ%>)">
+                <input type="hidden" name="qID" value="<%=items[0]._id%>" id="qID">
                 <% for(i=0; i < items[0].a.length; i++ ) { %>
                 <div class="form-check">
                     <label class="form-check-label">

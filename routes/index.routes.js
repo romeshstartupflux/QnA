@@ -33,7 +33,7 @@ router.post('/register', async function(req, res, next){
     "examineeID": insertdata.ops[0]._id,
   })
   req.session.user = insertdata.ops[0].examineeName
-  req.session.id = insertdata.ops[0]._id
+  req.session.userid = insertdata.ops[0]._id
   res.redirect('quiz/'+firstQ)
 });
 
@@ -81,14 +81,25 @@ router.get('/quiz/:pageNumber', async function(req, res, next){
   let sendData = {title : 'Quiz', items: await quizPage(pageNumber, nPerPage), nextQ: nextQ, examineeName: req.session.user};
   console.log("Send Data : ", sendData)
   res.render('quiz', sendData)
+  console.log("session user id : ", req.session.userid)
 
 })
 
-
+router.post('/scoreAnswer', async function(req, res, next){
+  console.log("Score Answer API Called . . . .")
+  const examinee = new Examinee();
+  console.log("examinee Answer qID : ", req.body)
+  let answerArray = [req.body.qID, req.body.answer]
+  await examinee.collection.updateOne({examineeName: req.session.user }, {$push : { examineeAnswer :  answerArray} })
+  .then(()=>{
+    console.log("Answer Updated")
+  })
+  
+})
 
 router.get("/alldata", async function(req,res, next){
   const quiz = new Quiz();
-  var alldata = await quiz.collection.find().toArray();
+  var alldata = await quiz.collection.aggregate([{$sample: { size: 1 } }]).toArray();
   console.log("All Data : ", alldata)
   res.send("OK")
 })
