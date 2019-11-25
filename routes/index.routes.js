@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 const querystring = require('querystring');
 var ObjectId = require('mongodb').ObjectID;
-
 const Quiz = require('../models/quiz')
 const Examinee = require('../models/examinee')
 
@@ -13,14 +12,29 @@ router.get('/', function (req, res, next) {
   });
 });
 
-
 router.post('/register', async function (req, res, next) {
   const examinee = new Examinee();
+  const quiz = new Quiz();
   if (await examinee.collection.findOne({
       examineeName: req.body.examineeName
     })) {
+    let getData = await examinee.collection.findOne({
+      examineeName: req.body.examineeName
+    });
+    let dataCount = await quiz.collection.find().count();
 
-    res.send("<alert>Second Time Not Allowed.</alert>")
+    if (getData.examineeAnswer.length < dataCount) {
+      let pageNumber = getData.examineeAnswer.length + 1
+
+      req.session.user = getData.examineeName
+      req.session.userid = getData._id
+      // res.send("continue quiz")
+      res.redirect("quiz/" + pageNumber)
+    } else {
+      res.send("*******************")
+    }
+
+    // res.send("<alert>Second Time Not Allowed.</alert>")
   } else {
     var insertdata = await examinee.collection.insertOne({
 
@@ -48,19 +62,6 @@ router.post('/register', async function (req, res, next) {
 
 });
 
-// router.get('/start/:query',async function(req, res, next){
-//   console.log("Start Link Called. . . . . . .")
-//   const quiz = new Quiz();
-//   const firstQ = 1;
-//   let newReq = querystring.parse(req.params.query);
-//   req.session.user = newReq.examineeName;
-//   console.log("Session : ",req.session.user )
-//   // console.log("PageNumber : ", pageNumber)
-//   console.log("FirstQ : ", newReq.firstQ)
-//   console.log("Examinee Name", newReq.examineeName)
-//   res.redirect('quiz/'+firstQ)
-// });
-
 router.get('/quiz/:pageNumber', async function (req, res, next) {
   console.log("QUIZ PAGE CALLED.");
 
@@ -69,50 +70,40 @@ router.get('/quiz/:pageNumber', async function (req, res, next) {
     const nPerPage = 1;
     let pageNumber = req.params.pageNumber;
     let countTill = await quiz.collection.find().count();
-
-
-    // let newReq = querystring.parse(req.params.query)
-
-    // let pageNumber = newReq.firstQ;
-    // const examineeName = newReq.examineeName;
-    // req.session.user = newReq.examineeName;
-    // console.log("Session : ",req.session.user )
-    console.log("PageNumber : ", pageNumber)
-    // console.log("FirstQ : ", newReq.firstQ)
-    // console.log("Examinee Name", newReq.examineeName)
-    // console.log("Examinee ID : ", newReq.examineeID)
-
-    async function quizPage(pageNumber, nPerPage) {
-
-      var quizDetails = await quiz.collection.find()
-        .skip(pageNumber > 0 ? ((pageNumber - 1) * nPerPage) : 0)
-        .limit(nPerPage)
-        .toArray();
-
-      console.log("QuizDetails : ", quizDetails)
-      return quizDetails;
-    }
-
-    console.log("Count : ", countTill)
-    let nextQ = parseInt(pageNumber) + 1;
-    console.log("NextQ : ", nextQ)
-    let sendData = {
-      title: 'Quiz',
-      items: await quizPage(pageNumber, nPerPage),
-      nextQ: nextQ,
-      examineeName: req.session.user
-    };
-    console.log("Send Data : ", sendData)
-
-    console.log("session user id : ", req.session.userid)
-    if (nextQ > countTill) {
-      // res.send("Quiz Completed.")
-      // res.end("End")
-      res.redirect('http://localhost:3000/yourscore')
-
+    if (pageNumber > countTill) {
+      res.render("yourscore")
     } else {
+      console.log("PageNumber : ", pageNumber)
+
+      async function quizPage(pageNumber, nPerPage) {
+
+        var quizDetails = await quiz.collection.find()
+          .skip(pageNumber > 0 ? ((pageNumber - 1) * nPerPage) : 0)
+          .limit(nPerPage)
+          .toArray();
+
+        return quizDetails;
+      }
+
+      let nextQ = parseInt(pageNumber) + 1;
+      let sendData = {
+        title: 'Quiz',
+        items: await quizPage(pageNumber, nPerPage),
+        nextQ: nextQ,
+        examineeName: req.session.user,
+        count: ((pageNumber - 1) * 20)
+      };
+      console.log("NextQ : ", nextQ)
+      console.log("Count : ", countTill)
+      // if (pageNumber > countTill) {
+      //   res.redirect('http://localhost:3000/yourscore')
+      // } else {
+      //   res.render('quiz', sendData)
+      // }
       res.render('quiz', sendData)
     }
+
+
   } else {
     res.send("********************")
   }
@@ -126,24 +117,36 @@ router.post('/scoreAnswer', async function (req, res, next) {
 
   /**   quiz data   */
   const quiz = new Quiz();
-  let quizdata = await quiz.collection.findOne({ _id : ObjectId(req.body.qID) } )
+  let quizdata = await quiz.collection.findOne({
+    _id: ObjectId(req.body.qID)
+  })
 
   let scoreUpdate
-  if(quizdata.ca == req.body.answer){
+  if (quizdata.ca == req.body.answer) {
     scoreUpdate = 1
-  }
-  else{
+  } else {
     scoreUpdate = 0
   }
 
-  let answerArray = [req.body.qID, req.body.answer]
+  let answer
+  if (req.body.answer) {
+    console.log("REQUEST BODY IS NOT EMPTY")
+    answer = req.body.answer
+  } else {
+    console.log("REQUEST BODY EMPTY")
+    answer = null
+  }
+
+  let answerArray = [req.body.qID, answer]
   await examinee.collection.updateOne({
       examineeName: req.session.user
     }, {
       $push: {
         examineeAnswer: answerArray
       },
-      $inc: {score : scoreUpdate} 
+      $inc: {
+        score: scoreUpdate
+      }
     })
     .then(() => {
       console.log("Answer Updated")
@@ -157,11 +160,15 @@ router.get('/yourscore', async function (req, res, next) {
     const quiz = new Quiz();
     const examinee = new Examinee();
 
-    let examineeData = await examinee.collection.findOne({examineeName: req.session.user});
+    let examineeData = await examinee.collection.findOne({
+      examineeName: req.session.user
+    });
 
     console.log("Examinee Data : ", examineeData);
     req.session.destroy();
-    res.render('yourscore', {data : examineeData})
+    res.render('yourscore', {
+      data: examineeData
+    })
   } else {
     res.send("************")
   }

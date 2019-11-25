@@ -4,7 +4,9 @@
         <h5 class="ml-auto"><%=examineeName%></h5>
     </nav>
 </header>
-
+<div class="progress">
+    <div class="progress-bar" id="progress-bar" role="progressbar" style="width:<%=count%>%" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
 <div id="quiz">
     <div class="quiz-box">
         <div class="quiz-q">
@@ -16,8 +18,8 @@
                 <% for(i=0; i < items[0].a.length; i++ ) { %>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input type="radio" class="form-check-input" name="answer"
-                            id="answer" value="<%=items[0].a[i]%>"><%=items[0].a[i]%>
+                        <input type="radio" class="form-check-input" name="answer" id="answer"
+                            value="<%=items[0].a[i]%>"><%=items[0].a[i]%>
                     </label>
                 </div>
                 <% } %>
