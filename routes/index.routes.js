@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const querystring = require('querystring');
+var ObjectId = require('mongodb').ObjectID;
 
 const Quiz = require('../models/quiz')
 const Examinee = require('../models/examinee')
@@ -63,82 +64,107 @@ router.post('/register', async function (req, res, next) {
 router.get('/quiz/:pageNumber', async function (req, res, next) {
   console.log("QUIZ PAGE CALLED.");
 
-  if(req.session.user){
+  if (req.session.user) {
     const quiz = new Quiz();
-  const nPerPage = 1;
-  let pageNumber = req.params.pageNumber;
-  let countTill = await quiz.collection.find().count();
-  
-  
-  // let newReq = querystring.parse(req.params.query)
-  
-  // let pageNumber = newReq.firstQ;
-  // const examineeName = newReq.examineeName;
-  // req.session.user = newReq.examineeName;
-  // console.log("Session : ",req.session.user )
-  console.log("PageNumber : ", pageNumber)
-  // console.log("FirstQ : ", newReq.firstQ)
-  // console.log("Examinee Name", newReq.examineeName)
-  // console.log("Examinee ID : ", newReq.examineeID)
+    const nPerPage = 1;
+    let pageNumber = req.params.pageNumber;
+    let countTill = await quiz.collection.find().count();
 
-  async function quizPage(pageNumber, nPerPage) {
 
-    var quizDetails = await quiz.collection.find()
-      .skip(pageNumber > 0 ? ((pageNumber - 1) * nPerPage) : 0)
-      .limit(nPerPage)
-      .toArray();
+    // let newReq = querystring.parse(req.params.query)
 
-    console.log("QuizDetails : ", quizDetails)
-    return quizDetails;
-  }
-  
-  console.log("Count : ", countTill)
-  let nextQ = parseInt(pageNumber) + 1;
-  console.log("NextQ : ", nextQ)
-  let sendData = {
-    title: 'Quiz',
-    items: await quizPage(pageNumber, nPerPage),
-    nextQ: nextQ,
-    examineeName: req.session.user
-  };
-  console.log("Send Data : ", sendData)
- 
-  console.log("session user id : ", req.session.userid)
-  if(nextQ > countTill){
-    // res.send("Quiz Completed.")
-    req.session.destroy()
-    res.end("End")
-  }
-  else{
-    res.render('quiz', sendData)
-  }
-  }else{
+    // let pageNumber = newReq.firstQ;
+    // const examineeName = newReq.examineeName;
+    // req.session.user = newReq.examineeName;
+    // console.log("Session : ",req.session.user )
+    console.log("PageNumber : ", pageNumber)
+    // console.log("FirstQ : ", newReq.firstQ)
+    // console.log("Examinee Name", newReq.examineeName)
+    // console.log("Examinee ID : ", newReq.examineeID)
+
+    async function quizPage(pageNumber, nPerPage) {
+
+      var quizDetails = await quiz.collection.find()
+        .skip(pageNumber > 0 ? ((pageNumber - 1) * nPerPage) : 0)
+        .limit(nPerPage)
+        .toArray();
+
+      console.log("QuizDetails : ", quizDetails)
+      return quizDetails;
+    }
+
+    console.log("Count : ", countTill)
+    let nextQ = parseInt(pageNumber) + 1;
+    console.log("NextQ : ", nextQ)
+    let sendData = {
+      title: 'Quiz',
+      items: await quizPage(pageNumber, nPerPage),
+      nextQ: nextQ,
+      examineeName: req.session.user
+    };
+    console.log("Send Data : ", sendData)
+
+    console.log("session user id : ", req.session.userid)
+    if (nextQ > countTill) {
+      // res.send("Quiz Completed.")
+      // res.end("End")
+      res.redirect('http://localhost:3000/yourscore')
+
+    } else {
+      res.render('quiz', sendData)
+    }
+  } else {
     res.send("********************")
   }
-
-  
-
-
-  
 
 })
 
 router.post('/scoreAnswer', async function (req, res, next) {
   console.log("Score Answer API Called . . . .")
   const examinee = new Examinee();
-  console.log("examinee Answer qID : ", req.body)
+  console.log("examinee Answer qID : ", req.body.qID)
+
+  /**   quiz data   */
+  const quiz = new Quiz();
+  let quizdata = await quiz.collection.findOne({ _id : ObjectId(req.body.qID) } )
+
+  let scoreUpdate
+  if(quizdata.ca == req.body.answer){
+    scoreUpdate = 1
+  }
+  else{
+    scoreUpdate = 0
+  }
+
   let answerArray = [req.body.qID, req.body.answer]
   await examinee.collection.updateOne({
       examineeName: req.session.user
     }, {
       $push: {
         examineeAnswer: answerArray
-      }
+      },
+      $inc: {score : scoreUpdate} 
     })
     .then(() => {
       console.log("Answer Updated")
     })
 
+})
+
+router.get('/yourscore', async function (req, res, next) {
+  console.log("YOUR SCORE PAGE (API) CALLED . . . . .")
+  if (req.session.user) {
+    const quiz = new Quiz();
+    const examinee = new Examinee();
+
+    let examineeData = await examinee.collection.findOne({examineeName: req.session.user});
+
+    console.log("Examinee Data : ", examineeData);
+    req.session.destroy();
+    res.render('yourscore', {data : examineeData})
+  } else {
+    res.send("************")
+  }
 })
 
 router.get("/alldata", async function (req, res, next) {

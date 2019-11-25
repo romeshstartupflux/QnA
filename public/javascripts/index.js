@@ -6,11 +6,13 @@ function nextQ(nextQ) {
     console.log("qID : ", qID)
     console.log("ANSWER : ", answer)
 
+    scoreAnswer(answer, qID)
+
     $.ajax({
         type: "GET",
         url: "/quiz/"+nextQ,
         success: function(result){
-            scoreAnswer(answer, qID)
+            // scoreAnswer(answer, qID)
             $("body").html(result)            
         }
     })
