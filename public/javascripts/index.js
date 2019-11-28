@@ -11,7 +11,7 @@ function nextQ(nextQ) {
         $.ajax({
             type: "GET",
             url: "/yourscore",
-            // async: false,
+            async: false,
             success: function(result){
                 // scoreAnswer(answer, qID)
                 console.log("yourscore ajax called")
