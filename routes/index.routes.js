@@ -31,7 +31,9 @@ router.post('/register', async function (req, res, next) {
       // res.send("continue quiz")
       res.redirect("quiz/" + pageNumber)
     } else {
-      res.send("*******************")
+      req.session.user = getData.examineeName
+      req.session.userid = getData._id
+      res.redirect("http://localhost:3000/yourscore")
     }
 
     // res.send("<alert>Second Time Not Allowed.</alert>")
@@ -64,44 +66,35 @@ router.post('/register', async function (req, res, next) {
 
 router.get('/quiz/:pageNumber', async function (req, res, next) {
   console.log("QUIZ PAGE CALLED.");
-
   if (req.session.user) {
     const quiz = new Quiz();
     const nPerPage = 1;
     let pageNumber = req.params.pageNumber;
+    let nextQ = parseInt(pageNumber) + 1;
     let countTill = await quiz.collection.find().count();
-    if (pageNumber > countTill) {
-      res.render("yourscore")
-    } else {
-      console.log("PageNumber : ", pageNumber)
-
-      async function quizPage(pageNumber, nPerPage) {
-
-        var quizDetails = await quiz.collection.find()
-          .skip(pageNumber > 0 ? ((pageNumber - 1) * nPerPage) : 0)
-          .limit(nPerPage)
-          .toArray();
-
-        return quizDetails;
-      }
-
-      let nextQ = parseInt(pageNumber) + 1;
-      let sendData = {
-        title: 'Quiz',
-        items: await quizPage(pageNumber, nPerPage),
-        nextQ: nextQ,
-        examineeName: req.session.user,
-        count: ((pageNumber - 1) * 20)
-      };
-      console.log("NextQ : ", nextQ)
-      console.log("Count : ", countTill)
-      // if (pageNumber > countTill) {
-      //   res.redirect('http://localhost:3000/yourscore')
-      // } else {
-      //   res.render('quiz', sendData)
-      // }
-      res.render('quiz', sendData)
+    const end = 999;
+    console.log("PageNumber : ", pageNumber)
+    async function quizPage(pageNumber, nPerPage) {
+      var quizDetails = await quiz.collection.find()
+        .skip(pageNumber > 0 ? ((pageNumber - 1) * nPerPage) : 0)
+        .limit(nPerPage)
+        .toArray();
+      return quizDetails;
     }
+    let sendData = {
+      title: 'Quiz',
+      items: await quizPage(pageNumber, nPerPage),
+      nextQ: nextQ,
+      examineeName: req.session.user,
+      count: ((pageNumber - 1) * 20),
+      countTill: countTill,
+      end: end
+    };
+    console.log("NextQ : ", nextQ)
+    console.log("Count : ", countTill)
+    console.log(" H H H H D D D D H H H H H D D : ", sendData)
+
+    res.render('quiz', sendData)
 
 
   } else {
@@ -151,6 +144,12 @@ router.post('/scoreAnswer', async function (req, res, next) {
     .then(() => {
       console.log("Answer Updated")
     })
+  // let quizLen = quiz.collection.find().count();
+  // let examineeData = await examinee.collection.findOne({examineeName : req.session.user})
+  // console.log("examineData : : : : :", examineeData)
+  // if(quizLen == examineeData.examineeAnswer.length){
+  //   res.render("yourscore")
+  // }
 
 })
 
@@ -159,15 +158,25 @@ router.get('/yourscore', async function (req, res, next) {
   if (req.session.user) {
     const quiz = new Quiz();
     const examinee = new Examinee();
+    let result
 
     let examineeData = await examinee.collection.findOne({
       examineeName: req.session.user
     });
+    result = (examineeData.score/examineeData.examineeAnswer.length) * 100
+
+    if(result >= 30){
+      result = "Passed"
+    }
+    else{
+      result = "Failed"
+    }
 
     console.log("Examinee Data : ", examineeData);
     req.session.destroy();
     res.render('yourscore', {
-      data: examineeData
+      data: examineeData, 
+      result: result
     })
   } else {
     res.send("************")
@@ -213,4 +222,5 @@ router.get("/insertdata", async function (req, res, next) {
   console.log("All Data : ", insertdata)
   res.send("OK")
 })
+
 module.exports = router;

@@ -13,7 +13,11 @@
             <p><b><%=items[0].q%></b></p>
         </div>
         <div class="quiz-a">
+            <%if(nextQ > countTill){%>
+                <form onsubmit="event.preventDefault(); nextQ(<%=end%>) ">
+                    <% } else { %>
             <form onsubmit="event.preventDefault(); nextQ(<%=nextQ%>)">
+                <% } %>
                 <input type="hidden" name="qID" value="<%=items[0]._id%>" id="qID">
                 <% for(i=0; i < items[0].a.length; i++ ) { %>
                 <div class="form-check">
@@ -24,6 +28,7 @@
                 </div>
                 <% } %>
                 <div class="quiz-submit-btn">
+                    
                     <button class="quiz-btn" type="submit">Submit</button>
                 </div>
             </form>

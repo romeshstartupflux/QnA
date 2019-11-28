@@ -7,15 +7,27 @@ function nextQ(nextQ) {
     console.log("ANSWER : ", answer)
 
     scoreAnswer(answer, qID)
-
-    $.ajax({
-        type: "GET",
-        url: "/quiz/"+nextQ,
-        success: function(result){
-            // scoreAnswer(answer, qID)
-            $("body").html(result)            
-        }
-    })
+    if(nextQ == 999){
+        $.ajax({
+            type: "GET",
+            url: "/yourscore",
+            success: function(result){
+                // scoreAnswer(answer, qID)
+                $("body").html(result)            
+            }
+        })
+    }
+    else{
+        $.ajax({
+            type: "GET",
+            url: "/quiz/"+nextQ,
+            success: function(result){
+                // scoreAnswer(answer, qID)
+                $("body").html(result)            
+            }
+        })
+    }
+    
 }
 
 function scoreAnswer(answer, qID){
