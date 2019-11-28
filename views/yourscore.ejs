@@ -1,4 +1,8 @@
 <div class="yourscore-card">
     <h1>Your Score : <%=data.score%></h1>
     <h6><%=result%></h6>
+    <%if(result == failed) { %>
+        <h6> <a href="/">Second Chance(Just For You)</a> </h6>
+    <% } %>
+
 </div>

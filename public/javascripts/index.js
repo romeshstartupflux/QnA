@@ -11,6 +11,7 @@ function nextQ(nextQ) {
         $.ajax({
             type: "GET",
             url: "/yourscore",
+            // async: false,
             success: function(result){
                 // scoreAnswer(answer, qID)
                 $("body").html(result)            
@@ -21,6 +22,7 @@ function nextQ(nextQ) {
         $.ajax({
             type: "GET",
             url: "/quiz/"+nextQ,
+            // async: false,
             success: function(result){
                 // scoreAnswer(answer, qID)
                 $("body").html(result)            
@@ -35,14 +37,16 @@ function scoreAnswer(answer, qID){
     $.ajax({
         type: 'POST',
         url: '/scoreAnswer',
+        // async: false,
         data: ({"answer" : answer, "qID" : qID}),
         success: function(result){
-            console.log("Score Updated Successfully.")
+             return console.log("Score Updated Successfully.")
         }
     })
 }
 
 function startQ() {
+    console.log("STARTQ FUNCTION CALLED.")
     const qNumber = 1;
 
     let examineeName = $("#examineeName").val();
@@ -50,6 +54,7 @@ function startQ() {
     $.ajax({
         method: "POST",
         url: "/register",
+        // async: false,
         data: ({"examineeName" : examineeName}),
         success : function(result){
             // console.log("Result yaha pe hai")
