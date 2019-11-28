@@ -142,7 +142,7 @@ router.post('/scoreAnswer', async function (req, res, next) {
       }
     })
     .then(() => {
-      console.log("Answer Updated")
+      res.send("Answer Updated")
     })
   // let quizLen = quiz.collection.find().count();
   // let examineeData = await examinee.collection.findOne({examineeName : req.session.user})

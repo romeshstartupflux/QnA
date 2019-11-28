@@ -14,6 +14,7 @@ function nextQ(nextQ) {
             // async: false,
             success: function(result){
                 // scoreAnswer(answer, qID)
+                console.log("yourscore ajax called")
                 $("body").html(result)            
             }
         })
