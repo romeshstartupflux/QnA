@@ -161,7 +161,7 @@ router.get('/yourscore', async function (req, res, next) {
     let result
     let Failed = "Failed"
     let Passed = "Passed"
-    let userName = req.session.user
+    const userName = req.session.user
 
     let examineeData = await examinee.collection.findOne({
       examineeName: req.session.user
@@ -183,6 +183,7 @@ router.get('/yourscore', async function (req, res, next) {
       failed: Failed,
       passed: Passed
     })
+    
   } else {
     res.send("************")
   }
@@ -243,7 +244,7 @@ router.post("/retry", async function (req, res, next) {
 
   req.session.user = req.body.examineeName;
 
-  let retry = await examinee.collection.update({
+  let retry = await examinee.collection.updateOne({
     examineeName: req.session.user
   }, {
     $set :{
@@ -251,7 +252,9 @@ router.post("/retry", async function (req, res, next) {
       examineeScore: 0
     }
   })
-  res.redirect("quiz/1")
+  const pageOne = 1
+  res.status(200)
+  res.redirect("quiz/"+pageOne)
 })
 
 module.exports = router;

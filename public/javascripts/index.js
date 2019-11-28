@@ -69,7 +69,8 @@ function startQ() {
 
 function retry(data){
     console.log("Retry Ajax Function Called.")
-    console.log("Data : ". data)
+    console.log("Data : ", data)
+
     $.ajax({
         method: "POST",
         url: "/retry",
