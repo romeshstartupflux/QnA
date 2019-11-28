@@ -161,26 +161,27 @@ router.get('/yourscore', async function (req, res, next) {
     let result
     let Failed = "Failed"
     let Passed = "Passed"
+    let user = req.session.user
 
     let examineeData = await examinee.collection.findOne({
       examineeName: req.session.user
     });
-    result = (examineeData.score/examineeData.examineeAnswer.length) * 100
+    result = (examineeData.score / examineeData.examineeAnswer.length) * 100
 
-    if(result >= 30){
+    if (result >= 30) {
       result = "Passed"
-    }
-    else{
+    } else {
       result = "Failed"
     }
 
     console.log("Examinee Data : ", examineeData);
     req.session.destroy();
     res.render('yourscore', {
-      data: examineeData, 
-      result: result, 
-      failed : Failed, 
-      passed : Passed
+      data: examineeData,
+      user: user,
+      result: result,
+      failed: Failed,
+      passed: Passed
     })
   } else {
     res.send("************")
@@ -200,41 +201,57 @@ router.get("/alldata", async function (req, res, next) {
 
 router.get("/insertdata", async function (req, res, next) {
   const quiz = new Quiz();
-  var insertdata = await quiz.collection.insertMany([
+  var insertdata = await quiz.collection.insertMany([{
+      q: "Marvel's First Movie?",
+      a: ["Thor", "Iron Man", "Captain America"],
+      ca: "Iron Man"
+    },
     {
-    q: "Marvel's First Movie?",
-    a: ["Thor", "Iron Man", "Captain America"],
-    ca: "Iron Man"
-  },
-  {
-    q: "Planet of Soul Stone",
-    a: ["Earth", "Vormir", "Nowhere"],
-    ca: "Vormir"
-  },
-  {
-    q: "God of Thunder",
-    a: ["Thor", "Iron Man", "Captain America"],
-    ca: "Thor"
-  },
-  {
-    q: "Thor's new weapon",
-    a: ["Mjolnir", "Stormbreaker", "Hammer"],
-    ca: "Stormbreaker"
-  },
-  {
-    q: "Strongest Avenger",
-    a: ["Thor", "Iron Man", "Captain America"],
-    ca: "Captain Marvel"
-  },
-  {
-    q: "First Avenger",
-    a: ["Iron Man", "Captain America", "Captain Marvel"],
-    ca: "Iron Man"
-  }
+      q: "Planet of Soul Stone",
+      a: ["Earth", "Vormir", "Nowhere"],
+      ca: "Vormir"
+    },
+    {
+      q: "God of Thunder",
+      a: ["Thor", "Iron Man", "Captain America"],
+      ca: "Thor"
+    },
+    {
+      q: "Thor's new weapon",
+      a: ["Mjolnir", "Stormbreaker", "Hammer"],
+      ca: "Stormbreaker"
+    },
+    {
+      q: "Strongest Avenger",
+      a: ["Thor", "Iron Man", "Captain America"],
+      ca: "Captain Marvel"
+    },
+    {
+      q: "First Avenger",
+      a: ["Iron Man", "Captain America", "Captain Marvel"],
+      ca: "Iron Man"
+    }
 
   ]);
   console.log("All Data : ", insertdata)
   res.send("OK")
+})
+
+router.post("/retry", async function (req, res, next) {
+  console.log("RETRY API CALLED")
+  const examinee = new Examinee();
+
+  req.session.user = req.body.examineeName;
+
+  let retry = await examinee.collection.update({
+    examineeName: req.session.user
+  }, {
+    $set :{
+      examineeAnswer: [],
+      examineeScore: 0
+    }
+  })
+  res.redirect("quiz/1")
 })
 
 module.exports = router;

@@ -66,3 +66,16 @@ function startQ() {
     });
     // nextQ(qNumber);
 }
+
+function retry(data){
+    console.log("Retry Ajax Function Called.")
+    console.log("Data : ". data)
+    $.ajax({
+        method: "POST",
+        url: "/retry",
+        data: ({"examineeName": data}),
+        success: function(result){
+            $("body").html(result)
+        }
+    })
+}
