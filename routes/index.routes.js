@@ -200,29 +200,39 @@ router.get("/alldata", async function (req, res, next) {
 
 router.get("/insertdata", async function (req, res, next) {
   const quiz = new Quiz();
-  // var insertdata = await quiz.collection.insertMany([
-  //   {
-  //   q: "Marvel's First Movie?",
-  //   a: ["Thor", "Iron Man", "Captain America"],
-  //   ca: "Iron Man"
-  // },
-  // {
-  //   q: "Planet of Soul Stone",
-  //   a: ["Earth", "Vormir", "Nowhere"],
-  //   ca: "Vormir"
-  // },
-  // {
-  //   q: "God of Thunder",
-  //   a: ["Thor", "Iron Man", "Captain America"],
-  //   ca: "Thor"
-  // },
-  // {
-  //   q: "Thor's new weapon",
-  //   a: ["Mjolnir", "Stormbreaker", "Hammer"],
-  //   ca: "Stormbreaker"
-  // }
+  var insertdata = await quiz.collection.insertMany([
+    {
+    q: "Marvel's First Movie?",
+    a: ["Thor", "Iron Man", "Captain America"],
+    ca: "Iron Man"
+  },
+  {
+    q: "Planet of Soul Stone",
+    a: ["Earth", "Vormir", "Nowhere"],
+    ca: "Vormir"
+  },
+  {
+    q: "God of Thunder",
+    a: ["Thor", "Iron Man", "Captain America"],
+    ca: "Thor"
+  },
+  {
+    q: "Thor's new weapon",
+    a: ["Mjolnir", "Stormbreaker", "Hammer"],
+    ca: "Stormbreaker"
+  },
+  {
+    q: "Strongest Avenger",
+    a: ["Thor", "Iron Man", "Captain America"],
+    ca: "Captain Marvel"
+  },
+  {
+    q: "First Avenger",
+    a: ["Iron Man", "Captain America", "Captain Marvel"],
+    ca: "Iron Man"
+  }
 
-  // ]);
+  ]);
   console.log("All Data : ", insertdata)
   res.send("OK")
 })
