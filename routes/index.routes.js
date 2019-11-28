@@ -161,7 +161,7 @@ router.get('/yourscore', async function (req, res, next) {
     let result
     let Failed = "Failed"
     let Passed = "Passed"
-    let user = req.session.user
+    let userName = req.session.user
 
     let examineeData = await examinee.collection.findOne({
       examineeName: req.session.user
@@ -178,7 +178,7 @@ router.get('/yourscore', async function (req, res, next) {
     req.session.destroy();
     res.render('yourscore', {
       data: examineeData,
-      user: user,
+      user: userName,
       result: result,
       failed: Failed,
       passed: Passed
