@@ -23,7 +23,7 @@ function nextQ(nextQ) {
         $.ajax({
             type: "GET",
             url: "/quiz/"+nextQ,
-            // async: false,
+            async: false,
             success: function(result){
                 // scoreAnswer(answer, qID)
                 $("body").html(result)            
