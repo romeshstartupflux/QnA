@@ -175,16 +175,17 @@ router.get('/yourscore', async function (req, res, next) {
     } else {
       result = "Failed"
     }
-
-    console.log("Examinee Data : ", examineeData);
-    req.session.destroy();
-    res.render('yourscore', {
+    let sendData = {
       data: examineeData,
       user: userName,
       result: result,
       failed: Failed,
       passed: Passed
-    })
+    }
+    console.log("Send data : ", sendData)
+    console.log("Examinee Data : ", examineeData);
+    req.session.destroy();
+    res.render('yourscore', sendData)
     
   } else {
     res.send("************")
