@@ -75,10 +75,12 @@ router.get('/quiz/:pageNumber', async function (req, res, next) {
     const end = 999;
     console.log("PageNumber : ", pageNumber)
     async function quizPage(pageNumber, nPerPage) {
+      console.log("quizPage Function called.")
       var quizDetails = await quiz.collection.find()
         .skip(pageNumber > 0 ? ((pageNumber - 1) * nPerPage) : 0)
         .limit(nPerPage)
         .toArray();
+      console.log(quizDetails)  
       return quizDetails;
     }
     let sendData = {
@@ -175,7 +177,7 @@ router.get('/yourscore', async function (req, res, next) {
     }
 
     console.log("Examinee Data : ", examineeData);
-    // req.session.destroy();
+    req.session.destroy();
     res.render('yourscore', {
       data: examineeData,
       user: userName,
@@ -183,7 +185,6 @@ router.get('/yourscore', async function (req, res, next) {
       failed: Failed,
       passed: Passed
     })
-    req.session.destroy();
     
   } else {
     res.send("************")

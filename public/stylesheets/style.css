@@ -95,6 +95,16 @@ a {
   color: white;
   border-radius: 5px;
 }
+.quiz-radio-options{
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  width: 300px;
+}
+.quiz-radio-options label{
+  width: 100%;
+}
 
 nav{
   display: flex;

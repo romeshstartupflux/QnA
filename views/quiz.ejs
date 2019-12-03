@@ -20,7 +20,7 @@
                 <% } %>
                 <input type="hidden" name="qID" value="<%=items[0]._id%>" id="qID">
                 <% for(i=0; i < items[0].a.length; i++ ) { %>
-                <div class="form-check">
+                <div class="form-check quiz-radio-options">
                     <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="answer" id="answer"
                             value="<%=items[0].a[i]%>"><%=items[0].a[i]%>
