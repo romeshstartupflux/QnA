@@ -183,7 +183,7 @@ router.get('/yourscore', async function (req, res, next) {
       passed: Passed
     }
     console.log("Send data : ", sendData)
-    console.log("Examinee Data : ", examineeData);
+    // console.log("Examinee Data : ", examineeData);
     req.session.destroy();
     res.render('yourscore', sendData)
     
