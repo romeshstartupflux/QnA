@@ -14,9 +14,9 @@
         </div>
         <div class="quiz-a">
             <%if(nextQ > countTill){%>
-            <form onsubmit="event.preventDefault(); nextQ(<%=end%>)">
+            <form onsubmit="event.preventDefault(); nextQ(<%=end%>); clearTimeout(myVar)">
                 <% } else { %>
-                    <form onsubmit="event.preventDefault(); nextQ(<%=nextQ%>)">
+                    <form onsubmit="event.preventDefault(); nextQ(<%=nextQ%>); clearTimeout(myVar)">
                         <% } %>
                 <input type="hidden" name="qID" value="<%=items[0]._id%>" id="qID">
                 <% for(i=0; i < items[0].a.length; i++ ) { %>
@@ -34,3 +34,10 @@
         </div>
     </div>
 </div>
+<script>
+        if(<%=nextQ%> > <%=countTill%>){
+        var myVar = setTimeout(function(){nextQ(<%=end%>)}, 6000 )
+        } else {
+        var myVar = setTimeout(function(){nextQ(<%=nextQ%>)}, 6000)
+        }
+    </script>

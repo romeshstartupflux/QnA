@@ -108,10 +108,19 @@ router.get('/quiz/:pageNumber', async function (req, res, next) {
 router.post('/scoreAnswer', async function (req, res, next) {
   console.log("Score Answer API Called . . . .")
   const examinee = new Examinee();
+  const quiz = new Quiz();
+  let examAnswerLen, quizLen
   console.log("examinee Answer qID : ", req.body.qID)
 
+  quizLen = await quiz.collection.find().count()
+
+  let examineeData = await examinee.collection.findOne({examineeName: req.session.user})
+
+  examAnswerLen = examineeData.examineeAnswer.length
+  console.log("Live examineeAnswer Length : ", examAnswerLen)
+
   /**   quiz data   */
-  const quiz = new Quiz();
+  
   let quizdata = await quiz.collection.findOne({
     _id: ObjectId(req.body.qID)
   })
@@ -133,7 +142,10 @@ router.post('/scoreAnswer', async function (req, res, next) {
   }
 
   let answerArray = [req.body.qID, answer]
-  await examinee.collection.updateOne({
+
+  if(quizLen >= examAnswerLen){
+    console.log("Updating Score . . . .# # # # # # # # # # #")
+    await examinee.collection.updateOne({
       examineeName: req.session.user
     }, {
       $push: {
@@ -146,6 +158,10 @@ router.post('/scoreAnswer', async function (req, res, next) {
     .then(() => {
       res.send("Answer Updated")
     })
+  }else{
+    res.send("Error. Contat Support.")
+  }
+  
   // let quizLen = quiz.collection.find().count();
   // let examineeData = await examinee.collection.findOne({examineeName : req.session.user})
   // console.log("examineData : : : : :", examineeData)

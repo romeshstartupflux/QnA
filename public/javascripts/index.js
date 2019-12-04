@@ -39,7 +39,7 @@ function scoreAnswer(answer, qID){
     $.ajax({
         type: 'POST',
         url: '/scoreAnswer',
-        // async: false,
+        async: false,
         data: ({"answer" : answer, "qID" : qID}),
         success: function(result){
              return console.log("Score Updated Successfully.")
